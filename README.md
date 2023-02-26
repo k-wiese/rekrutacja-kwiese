@@ -1,66 +1,105 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-sm-10  text-center">
+            <div class="my-3">
+                <p>Wybierz rok używając scrolla, nastepnie wybierz miesiąc.</p>
+                <input wire:model.debounce.500ms="date" id="datepicker" class="my-3" type="month">
+            </div>
+            @error('date')
+                <div class="alert alert-danger text-center mt-2">
+                    <p>{{ $message }}</p>
+                </div>
+            @enderror
+            <div>
+                <button wire:click="generate()" wire:loading.attr="disabled"
+                    class="btn btn-outline-light rounded-0 d-block w-100">
+                    <p wire:loading.remove class="my-0 py-0">Wygeneruj kartkę z kalendarza</p>
+                    <span wire:loading class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="mt-5 mb-3">
+                <button class="btn btn-outline-light rounded-0 d-block w-100" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Pokaż dokładny opis rozwiązania
+                </button>
+            </div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+            <div class="collapse row mb-5" id="collapseExample">
+                    <hr class="my-5">
+                <div class="col-6 text-start mt-4">
+                    <p>Do realizacji tego zadania użyłem nakładki Carbon do PHP</p>
+                    <p>Pobrałem datę od użytkownika następnie poddałem ją walidacji.</p>
+                    <p>Datę w formie obiektu carbon zapisałem w zmiennej $carbon_date</p>
+                    <p>Następnie uzupełniłem tabelę przekazywaną do widoku o tytuł. Użyłem funkcji format() na obiekcie
+                        carbon tak aby zwracała wybrany miesiąc + rok</p>
+                    <p>W zmiennej $start_day umieściłem nazwę dnia od którego zaczyna się miesiąc</p>
+                    <p>$days_to_print to licznik przechowywujący pozostałą liczbę dni do wpisania do tabeli </p>
+                    <p>$days_printed to licznik dni już wpisanych do tabeli przekazywanej na front</p>
+                    <p>$calendar_array to tablica przekazywana na front która zostanie uzupełniona przez pętlę</p>
+                    <p>Pętla for zaczynając od indeksu 0 a kończąc na 35 (liczbie okienek do zapełnienia) uzupełnia
+                        $calendar_array o informacje na temat komórki w kalendarzu</p>
+                    <p>Gdy pętla startuje, sprawdzamy w jaki dzień zaczyna się miesiąc i zgodnie ze sprawdzoną
+                        informacją dodajemy puste miejsce na początku kalendarza</p>
+                    <p>Jeśli miesiąc zaczyna się od poniedziałku to pustych komórek mamy 0 jeśli od środy to 2 itd.</p>
+                    <p>W każdym innym przypadku pętla sprawdza czy liczba dni wypisanych przekracza lub równa się
+                        liczbie dni do wypisania</p>
+                    <p>Jeśli przekracza to do końca pętli tabela będzie uzupełniana o puste wiersze.</p>
+                    <p>Jeśli nie przekracza to tabelę uzupełniamy o dzień a od dni do wypisania odejmujemy 1</p>
+                    <p>Ustawiamy publiczną tabelę na pozyskane dane aby wyświetlić ją na froncie.</p>
+                    <p>Na froncie za pomocą szablonu blade wyświetliłem tabelę, zwróciłem uwagę na przypadki kiedy
+                        kalendarz powinien być podświetlony na czerwono (niedziela)</p>
 
-## About Laravel
+                </div>
+                <div class="col-6">
+                    <div class="text-center">
+                        <p class="fs-4">Funkcja generate() po stronie kontrolera</p>
+                        <div>
+                            <img src="{{asset('img/calendarback.png')}}" class="img img-fluid" alt="">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="fs-4">Widok</p>
+                        <div>
+                            <img src="{{asset('img/calendarfront.png')}}" class="img img-fluid" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @isset($month['title'])
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+                <div>
+                    <div class="row">
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+                        <div class="mt-5 mb-2">
+                            <h4>
+                                {{ $month['title'] ?? 'default' }}
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 alert alert-success rounded-0">PON</div>
+                        <div class="col-2 alert alert-success rounded-0">WT</div>
+                        <div class="col-2 alert alert-success rounded-0">ŚR</div>
+                        <div class="col-2 alert alert-success rounded-0">CZW</div>
+                        <div class="col-2 alert alert-success rounded-0">PT</div>
+                        <div class="col-1 alert alert-success rounded-0">SOB</div>
+                        <div class="col-1 alert alert-danger rounded-0">ND</div>
+                    </div>
+                    <div class="row">
+                        @for ($i = 1; $i <= count($month['calendar']); $i++)
+                            @if ($i === 6 or $i === 13 or $i === 20 or $i === 27 or $i === 34)
+                                <div class="col-1 alert alert-success rounded-0">{{ $month['calendar'][$i] }}</div>
+                            @elseif($i === 7 or $i === 14 or $i === 21 or $i === 28 or $i === 35)
+                                <div class="col-1 alert alert-danger rounded-0">{{ $month['calendar'][$i] }}</div>
+                            @else
+                                <div class="col-2 alert alert-success rounded-0">{{ $month['calendar'][$i] }}</div>
+                            @endif
+                        @endfor
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+                    </div>
+                </div>
+            @endisset
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+        </div>
+    </div>
+</div>
